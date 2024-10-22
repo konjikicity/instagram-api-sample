@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Services\ApiService;
+use Illuminate\Http\RedirectResponse;
 
 class TopController extends Controller
 {
@@ -16,16 +17,18 @@ class TopController extends Controller
         $this->apiService = $apiService;
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        return view('index');
+        $instagramInfo = session('instagramInfo', []);
+
+        return view('index', ['instagramInfo' => $instagramInfo]);
     }
 
-    public function fetch(Request $request): array
+    public function fetch(Request $request): RedirectResponse
     {
         $bussinessId = $request->request->get('bussiness-id');
         $instagramInfo = $this->apiService->getInstagramInfo($bussinessId);
 
-        return $instagramInfo;
+        return redirect()->route('top.index')->with('instagramInfo', $instagramInfo);
     }
 }

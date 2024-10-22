@@ -9,6 +9,11 @@
         .text-red {
             color: red;
         }
+
+        .img-content img {
+            width: 300px;
+            height: 200px;
+        }
     </style>
 </head>
 
@@ -16,12 +21,18 @@
     <form method="POST" action="{{ route('top.fetch') }}">
         @csrf
         <label>インスタグラムID</label>
-        <input name="bussiness-id" type="text" />
+        <input name="bussiness-id" type="text" required />
         @if (isset($error))
             <p class="text-red">※ ビジネスアカウントのIDを入力してください</p>
         @endif
         <button type="submit">送信</button>
     </form>
+    @foreach ($instagramInfo as $info)
+        <div class="img-content">
+            <img src="{{ $info['media_url'] }}" />
+            <p>{{ $info['time_stamp'] }}</p>
+        </div>
+    @endforeach
 </body>
 
 </html>

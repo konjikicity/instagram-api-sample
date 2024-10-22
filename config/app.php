@@ -123,4 +123,10 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    * Instagram api
+    */
+    'instagram_base_url' => env('APP_INSTAGRAM_BASE_URL'),
+    'business_id' => env('APP_BUSINESS_ID'),
+    'instagram_token' => env('APP_INSTAGRAM_TOKEN'),
 ];

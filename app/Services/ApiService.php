@@ -27,10 +27,12 @@ class ApiService
 
                 if (isset($data['business_discovery']['media']['data'])) {
                     foreach ($data['business_discovery']['media']['data'] as $media) {
-                        $instagramInfo[] = [
-                            'media_url' => isset($media['media_url']) ? $media['media_url'] : '',
-                            'time_stamp' => isset($media['timestamp']) ? Carbon::parse($media['timestamp'])->format('Y年m月d日 H時i分s秒') : '',
-                        ];
+                        if (isset($media['media_url']) && isset($media['timestamp'])) {
+                            $instagramInfo[] = [
+                                'media_url' => $media['media_url'],
+                                'time_stamp' => Carbon::parse($media['timestamp'])->format('Y年m月d日 H時i分s秒'),
+                            ];
+                        }
                     }
                 }
 

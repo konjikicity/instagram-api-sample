@@ -35,7 +35,7 @@ class TopController extends Controller
         try {
             $this->instagramInfo = $this->apiService->getInstagramInfo($bussinessId);
         } catch (Exception $e) {
-            $this->error = 'apiでエラーが発生しました。' . $e->getMessage();
+            $this->error = 'apiでエラーが発生しました。';
         }
 
         return view('index', [

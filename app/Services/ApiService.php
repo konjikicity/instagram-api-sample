@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Carbon\Carbon;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
@@ -41,8 +42,8 @@ class ApiService
                 $url = null;
                 //
             }
-        } catch (RequestException $e) {
-            echo "Error: " . $e->getMessage() . "\n";
+        } catch (Exception $e) {
+            throw new Exception();
         }
 
         return $instagramInfo;

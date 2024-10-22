@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Services\ApiService;
 use Illuminate\Http\RedirectResponse;
+use Exception;
 
 class TopController extends Controller
 {
@@ -27,8 +28,14 @@ class TopController extends Controller
     public function fetch(Request $request): RedirectResponse
     {
         $bussinessId = $request->request->get('bussiness-id');
-        $instagramInfo = $this->apiService->getInstagramInfo($bussinessId);
+        try {
+            $instagramInfo = $this->apiService->getInstagramInfo($bussinessId);
+        } catch (Exception $e) {
+            return redirect()->route('top.index', ['error' => 'apiでエラーが発生しました。']);
+        }
 
-        return redirect()->route('top.index')->with('instagramInfo', $instagramInfo);
+        $request->session()->put('instagramInfo', $instagramInfo);
+
+        return redirect()->route('top.index');
     }
 }

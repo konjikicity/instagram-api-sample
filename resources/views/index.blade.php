@@ -22,11 +22,11 @@
         @csrf
         <label>インスタグラムID</label>
         <input name="bussiness-id" type="text" required />
-        @if (isset($error))
-            <p class="text-red">※ ビジネスアカウントのIDを入力してください</p>
-        @endif
         <button type="submit">送信</button>
     </form>
+    @if (isset($error))
+        <p class="text-red">{{ $error }}</p>
+    @endif
     @foreach ($instagramInfo as $info)
         <div class="img-content">
             <img src="{{ $info['media_url'] }}" />

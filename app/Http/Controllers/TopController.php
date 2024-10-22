@@ -11,6 +11,8 @@ use Exception;
 class TopController extends Controller
 {
     protected ApiService $apiService;
+    private $error = null;
+    private array $instagramInfo = [];
 
     public function __construct(
         ApiService $apiService
@@ -18,24 +20,27 @@ class TopController extends Controller
         $this->apiService = $apiService;
     }
 
-    public function index(Request $request): View
+    public function index(): View
     {
-        $instagramInfo = session('instagramInfo', []);
-
-        return view('index', ['instagramInfo' => $instagramInfo]);
+        return view('index', [
+            'instagramInfo' => $this->instagramInfo,
+            'error' => $this->error,
+        ]);
     }
 
-    public function fetch(Request $request): RedirectResponse
+    public function fetch(Request $request): View
     {
         $bussinessId = $request->request->get('bussiness-id');
+
         try {
-            $instagramInfo = $this->apiService->getInstagramInfo($bussinessId);
+            $this->instagramInfo = $this->apiService->getInstagramInfo($bussinessId);
         } catch (Exception $e) {
-            return redirect()->route('top.index', ['error' => 'apiでエラーが発生しました。']);
+            $this->error = 'apiでエラーが発生しました。' . $e->getMessage();
         }
 
-        $request->session()->put('instagramInfo', $instagramInfo);
-
-        return redirect()->route('top.index');
+        return view('index', [
+            'instagramInfo' => $this->instagramInfo,
+            'error' => $this->error,
+        ]);
     }
 }

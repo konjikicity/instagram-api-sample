@@ -18,7 +18,7 @@ class ApiService
         $accessToken = config('app.instagram_token');
 
         $client = new Client();
-        $url = $baseUrl . "/{$businessId}?fields=business_discovery.username({$userName}){media.limit(10){media_url,timestamp,username}}&access_token={$accessToken}";
+        $url = $baseUrl . "/{$businessId}?fields=business_discovery.username({$userName}){media.limit(10){media_url,media_type,permalink,thumbnail_url,timestamp,username}}&access_token={$accessToken}";
 
         // 最新10件のみ表示(1時間に200件までしか取得できないため)
         try {
@@ -27,16 +27,17 @@ class ApiService
 
             if (isset($data['business_discovery']['media']['data'])) {
                 foreach ($data['business_discovery']['media']['data'] as $media) {
-                    if (isset($media['media_url']) && isset($media['timestamp'])) {
-                        $instagramInfo[] = [
-                            'media_url' => $media['media_url'],
-                            'time_stamp' => Carbon::parse($media['timestamp'])->format('Y年m月d日 H時i分s秒'),
-                        ];
-                    }
+                    $instagramInfo[] = [
+                        'media_url' => isset($media['media_url']) ? $media['media_url'] : null,
+                        'time_stamp' => Carbon::parse($media['timestamp'])->format('Y年m月d日 H時i分s秒'),
+                        'permalink' => $media['permalink'],
+                        'thumbnail_url' => isset($media['thumbnail_url']) ? $media['thumbnail_url'] : null,
+                        'media_type' => $media['media_type'],
+                    ];
                 }
             }
         } catch (Exception $e) {
-            throw new Exception();
+            throw new Exception('Instagram情報の取得中にエラーが発生しました: ' . $e->getMessage());
         }
 
         return $instagramInfo;

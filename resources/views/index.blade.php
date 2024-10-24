@@ -29,7 +29,9 @@
     @endif
     @foreach ($instagramInfo as $info)
         <div class="img-content">
-            <img src="{{ $info['media_url'] }}" />
+            <a href="{{ $info['permalink'] }}" target="_blank">
+                <img src="{{ is_null($info['thumbnail_url']) ? $info['media_url'] : $info['thumbnail_url'] }}" />
+            </a>
             <p>{{ $info['time_stamp'] }}</p>
         </div>
     @endforeach

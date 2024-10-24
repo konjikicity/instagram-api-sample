@@ -30,17 +30,19 @@ class TopController extends Controller
 
     public function fetch(Request $request): View
     {
+        $instagramInfo = [];
+        $error = null;
         $bussinessId = $request->request->get('bussiness-id');
 
         try {
-            $this->instagramInfo = $this->apiService->getInstagramInfo($bussinessId);
+            $instagramInfo = $this->apiService->getInstagramInfo($bussinessId);
         } catch (Exception $e) {
-            $this->error = 'apiでエラーが発生しました。';
+            $error = $e->getMessage();
         }
 
         return view('index', [
-            'instagramInfo' => $this->instagramInfo,
-            'error' => $this->error,
+            'instagramInfo' => $instagramInfo,
+            'error' => $error,
         ]);
     }
 }

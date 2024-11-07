@@ -5,26 +5,26 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 
-class SendGAShopFollow extends Command
+class SendGAShopCheckIn extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:send-ga-shop-follow';
+    protected $signature = 'app:send-ga-shop-check-In';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'GA4イベントテスト送信用コマンド(店舗フォロー)';
+    protected $description = 'GA4イベントテスト送信用コマンド(チェックイン)';
 
     /**
-     * データを各店舗10件ずつ送信
+     * 送信データ
      *
-     * フォロー店舗名
+     * チェックイン店舗名
      * エリア
      * 会員番号
      * 都道府県
@@ -56,7 +56,7 @@ class SendGAShopFollow extends Command
                     'app_instance_id' => $app_instance_id,
                     'events' => [
                         [
-                            'name' => 'shop_follow',
+                            'name' => 'shop_check_in',
                             'params' => [
                                 'shop_name' => $shop['name'],
                                 'shop_area' => $shop['area'],

@@ -137,4 +137,9 @@ return [
     'youtube_token' => env('APP_YOUTUBE_TOKEN'),
     'youtube_channel_id' => env('APP_YOUTUBE_CHANNEL_ID'),
 
+    /*
+    * GA4
+    */
+    'firebase_app_id' => env('APP_FIREBASE_APP_ID'),
+    'measurement_api_secret' => env('APP_MEASUREMENT_API_SECRET'),
 ];

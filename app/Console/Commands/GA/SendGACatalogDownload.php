@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\GA;
 
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
@@ -43,7 +43,8 @@ class SendGACatalogDownload extends Command
         $areaPref = $this->getAreaPref();
 
         foreach ($catalogs as $catalog) {
-            for ($i = 0; $i < 10; $i++) {
+            $loopCount = rand(1, 100);
+            for ($i = 0; $i < $loopCount; $i++) {
                 $lf_member_number = rand(100000, 999999);
                 $app_instance_id = bin2hex(random_bytes(16));
                 $age = rand(18, 65);

@@ -1,30 +1,30 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\GA;
 
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 
-class SendGAShopFollow extends Command
+class SendGAShopCheckIn extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:send-ga-shop-follow';
+    protected $signature = 'app:send-ga-shop-check-in';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'GA4イベントテスト送信用コマンド(店舗フォロー)';
+    protected $description = 'GA4イベントテスト送信用コマンド(チェックイン閲覧)';
 
     /**
-     * データを各店舗10件ずつ送信
+     * 送信データ
      *
-     * フォロー店舗名
+     * チェックイン店舗名
      * エリア
      * 会員番号
      * 都道府県
@@ -44,7 +44,8 @@ class SendGAShopFollow extends Command
         $areaPref = $this->getAreaPref();
 
         foreach ($shops as $shop) {
-            for ($i = 0; $i < 10; $i++) {
+            $loopCount = rand(1, 100);
+            for ($i = 0; $i < $loopCount; $i++) {
                 $lf_member_number = rand(100000, 999999);
                 $app_instance_id = bin2hex(random_bytes(16));
                 $age = rand(18, 65);
@@ -56,7 +57,7 @@ class SendGAShopFollow extends Command
                     'app_instance_id' => $app_instance_id,
                     'events' => [
                         [
-                            'name' => 'shop_follow',
+                            'name' => 'shop_check_in',
                             'params' => [
                                 'shop_name' => $shop['name'],
                                 'shop_area' => $shop['area'],

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\GA;
 
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
@@ -12,23 +12,26 @@ class SendGAPickUpView extends Command
      *
      * @var string
      */
-    protected $signature = 'app:send-ga-pickup-view';
+    protected $signature = 'app:send-ga-product-view';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'GA4イベントテスト送信用コマンド(ピックアップ閲覧)';
+    protected $description = 'GA4イベントテスト送信用コマンド(製品閲覧)';
 
     /**
      * 送信データ
      *
-     * 記事名
+     * 製品名
+     * 大カテゴリ
+     * 中
      * 会員番号
      * 都道府県
      * 年齢
      * 継続利用日数
+     * 遷移元
      */
     public function handle()
     {
@@ -41,10 +44,11 @@ class SendGAPickUpView extends Command
 
         $areaPref = $this->getAreaPref();
         $transitionSources = $this->getTransitionSource();
-        $types = $this->getType();
+        $products = $this->getProducts();
 
-        foreach ($types as $type) {
-            for ($i = 0; $i < 100; $i++) {
+        foreach ($products as $product) {
+            $loopCount = rand(1, 100);
+            for ($i = 0; $i < $loopCount; $i++) {
                 $lf_member_number = rand(100000, 999999);
                 $app_instance_id = bin2hex(random_bytes(16));
                 $age = rand(18, 65);
@@ -56,15 +60,17 @@ class SendGAPickUpView extends Command
                     'app_instance_id' => $app_instance_id,
                     'events' => [
                         [
-                            'name' => 'pickup_view',
+                            'name' => 'product_view',
                             'params' => [
-                                'article_name' => 'Logos' . $type . 'Vol' . $i,
+                                'product_name' => $product['name'],
+                                'large_category' => $product['large_category'],
+                                'medium_category' => $product['medium_category'],
+                                'small_category' => $product['small_category'],
                                 'lf_member_number' => $lf_member_number,
                                 'area' => $randomAreaPref['area'],
                                 'pref' => $randomAreaPref['pref'],
                                 'age' => $age,
                                 'continue_use_date' => $continue_use_date,
-                                'type' => $type,
                                 'transition_source' => $transitionSources[array_rand($transitionSources)],
                                 "session_id" => "123",
                                 "engagement_time_msec" => "100",
@@ -80,7 +86,7 @@ class SendGAPickUpView extends Command
 
                     if ($response->getStatusCode() == 204) {
                         $count = $i + 1;
-                        echo "イベントが正常に送信されました: {$type} ({$count}回目)\n";
+                        echo "イベントが正常に送信されました: {$product['name']} ({$count}回目)\n";
                     } else {
                         echo "エラーが発生しました: " . $response->getBody();
                     }
@@ -91,24 +97,94 @@ class SendGAPickUpView extends Command
         }
     }
 
-    private function getType(): array
-    {
-        $types = [
-            'ニュース',
-            '製品'
-        ];
-
-        return $types;
-    }
-
     private function getTransitionSource(): array
     {
         $transitionSources = [
-            'TOPページ',
+            '製品TOP',
             'Push通知'
         ];
 
         return $transitionSources;
+    }
+
+    private function getProducts(): array
+    {
+        $products = [
+            [
+                'name' => 'プレミアム デビルブロックルーム EX-BD（グレートドゥーブルG2・プラス XL-BD用）',
+                'large_category' => 'ギア',
+                'medium_category' => 'テント',
+                'small_category' => '2ルーム'
+            ],
+            [
+                'name' => 'プレミアム PANEL グレートドゥーブルG2・プラス XL-BD',
+                'large_category' => 'ギア',
+                'medium_category' => 'テント',
+                'small_category' => '2ルーム'
+            ],
+            [
+                'name' => '【秋セット】丸洗いスランバーシュラフ・-2　2個セット',
+                'large_category' => 'ギア',
+                'medium_category' => '寝具',
+                'small_category' => 'シュラフ'
+            ],
+            [
+                'name' => '【秋セット】丸洗いやわらか あったかシュラフ・-2　2個セット',
+                'large_category' => 'ギア',
+                'medium_category' => '寝具',
+                'small_category' => 'シュラフ'
+            ],
+            [
+                'name' => '氷点下リカバリー・クールボディタオル',
+                'large_category' => 'アパレル',
+                'medium_category' => 'アクセサリー',
+                'small_category' => 'タオル・てぬぐい・バンダナ'
+            ],
+            [
+                'name' => 'CAMP LOGOS Leeコラボフリージーパンツ',
+                'large_category' => 'アパレル',
+                'medium_category' => 'ボトムス',
+                'small_category' => 'パンツ'
+            ],
+            [
+                'name' => 'アネモスシェル（Family)',
+                'large_category' => 'アパレル',
+                'medium_category' => 'アウター',
+                'small_category' => 'ジャケット'
+            ],
+            [
+                'name' => 'ロゴスのえほん 水くん',
+                'large_category' => 'コレクション',
+                'medium_category' => 'カタログ',
+                'small_category' => 'その他'
+            ],
+            [
+                'name' => 'ロゴスのえほん 火くん',
+                'large_category' => 'コレクション',
+                'medium_category' => 'カタログ',
+                'small_category' => 'その他'
+            ],
+            [
+                'name' => 'ロゴスのえほん 木くん',
+                'large_category' => 'コレクション',
+                'medium_category' => 'カタログ',
+                'small_category' => 'その他'
+            ],
+            [
+                'name' => 'Loopadd どこでもホルダー',
+                'large_category' => 'ギア',
+                'medium_category' => '寝具',
+                'small_category' => 'チェアカバー',
+            ],
+            [
+                'name' => '【秋セット】7075キュービックチェア（レッド）　2個セット',
+                'large_category' => 'ギア',
+                'medium_category' => '寝具',
+                'small_category' => 'チェア・ベンチ',
+            ]
+        ];
+
+        return $products;
     }
 
     private function getAreaPref()

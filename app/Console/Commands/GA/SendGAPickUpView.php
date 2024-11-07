@@ -1,35 +1,36 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\GA;
 
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 
-class SendGAShopCheckIn extends Command
+class SendGAPickUpView extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:send-ga-shop-check-In';
+    protected $signature = 'app:send-ga-pickup-view';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'GA4イベントテスト送信用コマンド(チェックイン)';
+    protected $description = 'GA4イベントテスト送信用コマンド(ピックアップ閲覧)';
 
     /**
      * 送信データ
      *
-     * チェックイン店舗名
-     * エリア
+     * 記事名
+     * 記事種別
      * 会員番号
      * 都道府県
      * 年齢
      * 継続利用日数
+     * 遷移元
      */
     public function handle()
     {
@@ -40,11 +41,13 @@ class SendGAShopCheckIn extends Command
         $client = new Client();
         $url = "https://www.google-analytics.com/mp/collect?firebase_app_id={$firebase_app_id}&api_secret={$measurement_api_secret}";
 
-        $shops =  $this->getShops();
         $areaPref = $this->getAreaPref();
+        $transitionSources = $this->getTransitionSource();
+        $types = $this->getType();
 
-        foreach ($shops as $shop) {
-            for ($i = 0; $i < 10; $i++) {
+        foreach ($types as $type) {
+            $loopCount = rand(1, 100);
+            for ($i = 0; $i < $loopCount; $i++) {
                 $lf_member_number = rand(100000, 999999);
                 $app_instance_id = bin2hex(random_bytes(16));
                 $age = rand(18, 65);
@@ -56,15 +59,16 @@ class SendGAShopCheckIn extends Command
                     'app_instance_id' => $app_instance_id,
                     'events' => [
                         [
-                            'name' => 'shop_check_in',
+                            'name' => 'pickup_view',
                             'params' => [
-                                'shop_name' => $shop['name'],
-                                'shop_area' => $shop['area'],
+                                'article_name' => 'Logos' . $type . 'Vol' . $i,
                                 'lf_member_number' => $lf_member_number,
                                 'area' => $randomAreaPref['area'],
                                 'pref' => $randomAreaPref['pref'],
                                 'age' => $age,
                                 'continue_use_date' => $continue_use_date,
+                                'type' => $type,
+                                'transition_source' => $transitionSources[array_rand($transitionSources)],
                                 "session_id" => "123",
                                 "engagement_time_msec" => "100",
                             ]
@@ -79,7 +83,7 @@ class SendGAShopCheckIn extends Command
 
                     if ($response->getStatusCode() == 204) {
                         $count = $i + 1;
-                        echo "イベントが正常に送信されました: {$shop['name']} ({$count}回目)\n";
+                        echo "イベントが正常に送信されました: {$type} ({$count}回目)\n";
                     } else {
                         echo "エラーが発生しました: " . $response->getBody();
                     }
@@ -90,52 +94,24 @@ class SendGAShopCheckIn extends Command
         }
     }
 
-    private function getShops(): array
+    private function getType(): array
     {
-        $shops = [
-            [
-                'name' => 'LOGOS SHOP 札幌店',
-                'area' => '北海道'
-            ],
-            [
-                'name' => 'LOGOS SHOP 大阪店',
-                'area' => '近畿'
-            ],
-            [
-                'name' => 'LOGOS SHOP 東京店',
-                'area' => '関東'
-            ],
-            [
-                'name' => 'LOGOS SHOP 越谷レイクタウンアウトレット店',
-                'area' => '関東'
-            ],
-            [
-                'name' => 'LOGOS SHOP 山口店',
-                'area' => '中国',
-            ],
-            [
-                'name' => 'LOGOS SHOP 静岡清水店',
-                'area' => '東海',
-            ],
-            [
-                'name' => 'LOGOS SHOP ららぽーと沼津',
-                'area' => '東海',
-            ],
-            [
-                'name' => 'フォレオ大津一里山店',
-                'area' => '近畿',
-            ],
-            [
-                'name' => 'LOGOS SHOP ピエリ守山店',
-                'area' => '近畿',
-            ],
-            [
-                'name' => 'LOGOS SHOP & CAFE ロゴスランド店',
-                'area' => '北関東・甲信',
-            ],
+        $types = [
+            'ニュース',
+            '製品'
         ];
 
-        return $shops;
+        return $types;
+    }
+
+    private function getTransitionSource(): array
+    {
+        $transitionSources = [
+            'TOPページ',
+            'Push通知'
+        ];
+
+        return $transitionSources;
     }
 
     private function getAreaPref()

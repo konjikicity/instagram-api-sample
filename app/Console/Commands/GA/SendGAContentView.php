@@ -108,18 +108,6 @@ class SendGAContentView extends Command
     {
         $articles = [
             [
-                'name' => 'FAMILY LOGOS 2024',
-                'type' => '特集',
-            ],
-            [
-                'name' => 'おうちでアウトドア＋',
-                'type' => '特集',
-            ],
-            [
-                'name' => 'Loopadd特集　by メイプルショッピング',
-                'type' => '特集',
-            ],
-            [
                 'name' => '横浜簡単中華BBQ!',
                 'type' => '月刊ロゴス',
             ],

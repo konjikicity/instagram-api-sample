@@ -34,7 +34,7 @@ class SendGAData extends Command
     public function handle(): void
     {
         $this->call('app:send-ga-catalog-download');
-        $this->call('app:send-ga-countent-view');
+        $this->call('app:send-ga-content-view');
         $this->call('app:send-ga-pickup-view');
         $this->call('app:send-ga-product-view');
         $this->call('app:send-ga-shop-check-in');

@@ -5,14 +5,14 @@ namespace App\Console\Commands\GA;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 
-class SendGACountentView extends Command
+class SendGAContentView extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:send-ga-countent-view';
+    protected $signature = 'app:send-ga-content-view';
 
     /**
      * The console command description.

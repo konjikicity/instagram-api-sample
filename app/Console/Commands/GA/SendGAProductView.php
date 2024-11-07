@@ -5,7 +5,7 @@ namespace App\Console\Commands\GA;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 
-class SendGAPickUpView extends Command
+class SendGAProductView extends Command
 {
     /**
      * The name and signature of the console command.

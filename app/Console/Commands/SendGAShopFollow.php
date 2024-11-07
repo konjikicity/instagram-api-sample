@@ -38,7 +38,7 @@ class SendGAShopFollow extends Command
         $measurement_api_secret = config('app.measurement_api_secret');
 
         $client = new Client();
-        $url = "https://www.google-analytics.com/mp/collect?firebase_app_id={$firebase_app_id}&api_secret={$measurement_api_secret}&debug_mode=true";
+        $url = "https://www.google-analytics.com/mp/collect?firebase_app_id={$firebase_app_id}&api_secret={$measurement_api_secret}";
 
         $shops =  $this->getShops();
         $areaPref = $this->getAreaPref();
@@ -66,7 +66,7 @@ class SendGAShopFollow extends Command
                                 'age' => $age,
                                 'continue_use_date' => $continue_use_date,
                                 "session_id" => "123",
-                                "engagement_time_msec" => "100"
+                                "engagement_time_msec" => "100",
                             ]
                         ]
                     ]

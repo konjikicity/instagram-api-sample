@@ -5,27 +5,26 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 
-class SendGAShopCheckIn extends Command
+class SendGACatalogDownload extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:send-ga-shop-check-In';
+    protected $signature = 'app:send-ga-catalog-download';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'GA4イベントテスト送信用コマンド(チェックイン)';
+    protected $description = 'GA4イベントテスト送信用コマンド(カタログダウンロード)';
 
     /**
      * 送信データ
      *
-     * チェックイン店舗名
-     * エリア
+     * カタログ名
      * 会員番号
      * 都道府県
      * 年齢
@@ -40,10 +39,10 @@ class SendGAShopCheckIn extends Command
         $client = new Client();
         $url = "https://www.google-analytics.com/mp/collect?firebase_app_id={$firebase_app_id}&api_secret={$measurement_api_secret}";
 
-        $shops =  $this->getShops();
+        $catalogs =  $this->getCatalogs();
         $areaPref = $this->getAreaPref();
 
-        foreach ($shops as $shop) {
+        foreach ($catalogs as $catalog) {
             for ($i = 0; $i < 10; $i++) {
                 $lf_member_number = rand(100000, 999999);
                 $app_instance_id = bin2hex(random_bytes(16));
@@ -56,10 +55,9 @@ class SendGAShopCheckIn extends Command
                     'app_instance_id' => $app_instance_id,
                     'events' => [
                         [
-                            'name' => 'shop_check_in',
+                            'name' => 'catalog_download',
                             'params' => [
-                                'shop_name' => $shop['name'],
-                                'shop_area' => $shop['area'],
+                                'catalog_name' => $catalog,
                                 'lf_member_number' => $lf_member_number,
                                 'area' => $randomAreaPref['area'],
                                 'pref' => $randomAreaPref['pref'],
@@ -79,7 +77,7 @@ class SendGAShopCheckIn extends Command
 
                     if ($response->getStatusCode() == 204) {
                         $count = $i + 1;
-                        echo "イベントが正常に送信されました: {$shop['name']} ({$count}回目)\n";
+                        echo "イベントが正常に送信されました: {$catalog} ({$count}回目)\n";
                     } else {
                         echo "エラーが発生しました: " . $response->getBody();
                     }
@@ -90,52 +88,22 @@ class SendGAShopCheckIn extends Command
         }
     }
 
-    private function getShops(): array
+    private function getCatalogs(): array
     {
-        $shops = [
-            [
-                'name' => 'LOGOS SHOP 札幌店',
-                'area' => '北海道'
-            ],
-            [
-                'name' => 'LOGOS SHOP 大阪店',
-                'area' => '近畿'
-            ],
-            [
-                'name' => 'LOGOS SHOP 東京店',
-                'area' => '関東'
-            ],
-            [
-                'name' => 'LOGOS SHOP 越谷レイクタウンアウトレット店',
-                'area' => '関東'
-            ],
-            [
-                'name' => 'LOGOS SHOP 山口店',
-                'area' => '中国',
-            ],
-            [
-                'name' => 'LOGOS SHOP 静岡清水店',
-                'area' => '東海',
-            ],
-            [
-                'name' => 'LOGOS SHOP ららぽーと沼津',
-                'area' => '東海',
-            ],
-            [
-                'name' => 'フォレオ大津一里山店',
-                'area' => '近畿',
-            ],
-            [
-                'name' => 'LOGOS SHOP ピエリ守山店',
-                'area' => '近畿',
-            ],
-            [
-                'name' => 'LOGOS SHOP & CAFE ロゴスランド店',
-                'area' => '北関東・甲信',
-            ],
+        $catalogs = [
+            'LOGOS SELECTION CATALOG 2024',
+            'LOGOS PREMIUM LINE 2024',
+            'Smart LOGOS vol.23',
+            'Smart LOGOS vol.22',
+            'PAPER LOGOS vol.12',
+            'PAPER LOGOS vol.11',
+            '冬ロゴス 2023-2024',
+            '冬ロゴス 2022-2023',
+            'LOGOSはじめてCATALOG 2024',
+            'LOGOSはじめてCATALOG 2023'
         ];
 
-        return $shops;
+        return $catalogs;
     }
 
     private function getAreaPref()

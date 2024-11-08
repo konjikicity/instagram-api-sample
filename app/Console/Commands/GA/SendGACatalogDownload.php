@@ -49,6 +49,7 @@ class SendGACatalogDownload extends Command
                 $app_instance_id = bin2hex(random_bytes(16));
                 $age = rand(18, 65);
                 $continue_use_date = rand(1, 365);
+                $lfMemberId = rand(1, 100000000);
 
                 $randomAreaPref = $areaPref[array_rand($areaPref)];
 
@@ -58,7 +59,9 @@ class SendGACatalogDownload extends Command
                         [
                             'name' => 'catalog_download',
                             'params' => [
-                                'catalog_name' => $catalog,
+                                'catalog_id'   => $catalog['id'],
+                                'content_name' => $catalog['name'],
+                                'lf_member_id' => $lfMemberId,
                                 'lf_member_number' => $lf_member_number,
                                 'area' => $randomAreaPref['area'],
                                 'pref' => $randomAreaPref['pref'],
@@ -78,7 +81,7 @@ class SendGACatalogDownload extends Command
 
                     if ($response->getStatusCode() == 204) {
                         $count = $i + 1;
-                        echo "イベントが正常に送信されました: {$catalog} ({$count}回目)\n";
+                        echo "イベントが正常に送信されました: {$catalog['name']} ({$count}回目)\n";
                     } else {
                         echo "エラーが発生しました: " . $response->getBody();
                     }
@@ -92,16 +95,42 @@ class SendGACatalogDownload extends Command
     private function getCatalogs(): array
     {
         $catalogs = [
-            'LOGOS SELECTION CATALOG 2024',
-            'LOGOS PREMIUM LINE 2024',
-            'Smart LOGOS vol.23',
-            'Smart LOGOS vol.22',
-            'PAPER LOGOS vol.12',
-            'PAPER LOGOS vol.11',
-            '冬ロゴス 2023-2024',
-            '冬ロゴス 2022-2023',
-            'LOGOSはじめてCATALOG 2024',
-            'LOGOSはじめてCATALOG 2023'
+            [
+                'id' => 1,
+                'name' => 'LOGOS PREMIUM LINE 2024'
+            ],
+            [
+                'id' => 2,
+                'name' => 'Smart LOGOS vol.23'
+            ],
+            [
+                'id' => 3,
+                'name' => 'Smart LOGOS vol.22'
+            ],
+            [
+                'id' => 4,
+                'name' => 'PAPER LOGOS vol.12'
+            ],
+            [
+                'id' => 5,
+                'name' => 'PAPER LOGOS vol.11'
+            ],
+            [
+                'id' => 6,
+                'name' => '冬ロゴス 2023-2024'
+            ],
+            [
+                'id' => 7,
+                'name' => '冬ロゴス 2022-2023'
+            ],
+            [
+                'id' => 8,
+                'name' => 'LOGOSはじめてCATALOG 2024'
+            ],
+            [
+                'id' => 9,
+                'name' => 'LOGOSはじめてCATALOG 2023'
+            ],
         ];
 
         return $catalogs;

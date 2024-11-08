@@ -5,31 +5,32 @@ namespace App\Console\Commands\GA;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 
-class SendGAShopFollow extends Command
+class SendGAMameTishikiView extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:send-ga-shop-follow';
+    protected $signature = 'app:send-ga-mametishiki-view';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'GA4イベントテスト送信用コマンド(店舗フォロー)';
+    protected $description = 'GA4イベントテスト送信用コマンド(まめ知識閲覧)';
 
     /**
-     * データを各店舗10件ずつ送信
+     * 送信データ
      *
-     * フォロー店舗名
-     * エリア
+     * 記事ID
+     * 記事名
      * 会員番号
      * 都道府県
      * 年齢
      * 継続利用日数
+     * 遷移元
      */
     public function handle()
     {
@@ -40,35 +41,36 @@ class SendGAShopFollow extends Command
         $client = new Client();
         $url = "https://www.google-analytics.com/mp/collect?firebase_app_id={$firebase_app_id}&api_secret={$measurement_api_secret}";
 
-        $shops =  $this->getShops();
         $areaPref = $this->getAreaPref();
-        $loopCount = rand(1, 100);
+        $transitionSources = $this->getTransitionSource();
+        $articles = $this->getArticles();
 
-        foreach ($shops as $shop) {
+        foreach ($articles as $article) {
+            $loopCount = rand(1, 100);
             for ($i = 0; $i < $loopCount; $i++) {
                 $lf_member_number = rand(100000, 999999);
                 $app_instance_id = bin2hex(random_bytes(16));
                 $age = rand(18, 65);
                 $continue_use_date = rand(1, 365);
-
                 $lfMemberId = rand(1, 100000000);
+
                 $randomAreaPref = $areaPref[array_rand($areaPref)];
 
                 $data = [
                     'app_instance_id' => $app_instance_id,
                     'events' => [
                         [
-                            'name' => 'shop_follow',
+                            'name' => 'mametishiki_view',
                             'params' => [
-                                'shop_id' => $shop['id'],
-                                'shop_name' => $shop['name'],
-                                'shop_area' => $shop['area'],
+                                'article_id' => $article['id'],
+                                'content_name' => $article['name'],
                                 'lf_member_id' => $lfMemberId,
                                 'lf_member_number' => $lf_member_number,
                                 'area' => $randomAreaPref['area'],
                                 'pref' => $randomAreaPref['pref'],
                                 'age' => $age,
                                 'continue_use_date' => $continue_use_date,
+                                'transition_source' => $transitionSources[array_rand($transitionSources)],
                                 "session_id" => "123",
                                 "engagement_time_msec" => "100",
                             ]
@@ -83,7 +85,7 @@ class SendGAShopFollow extends Command
 
                     if ($response->getStatusCode() == 204) {
                         $count = $i + 1;
-                        echo "イベントが正常に送信されました: {$shop['name']} ({$count}回目)\n";
+                        echo "イベントが正常に送信されました: {$article['name']} ({$count}回目)\n";
                     } else {
                         echo "エラーが発生しました: " . $response->getBody();
                     }
@@ -94,62 +96,34 @@ class SendGAShopFollow extends Command
         }
     }
 
-    private function getShops(): array
+    private function getTransitionSource(): array
     {
-        $shops = [
+        $transitionSources = [
+            'ニュースTOP',
+            'Push通知'
+        ];
+
+        return $transitionSources;
+    }
+
+    private function getArticles(): array
+    {
+        $articles = [
             [
                 'id' => 1,
-                'name' => 'LOGOS SHOP 札幌店',
-                'area' => '北海道'
+                'name' => 'No1 道具選びのコツ',
             ],
             [
                 'id' => 2,
-                'name' => 'LOGOS SHOP 大阪店',
-                'area' => '近畿'
+                'name' => 'No2 キャンプ場に行く前の確認いろいろ',
             ],
             [
                 'id' => 3,
-                'name' => 'LOGOS SHOP 東京店',
-                'area' => '関東'
-            ],
-            [
-                'id' => 4,
-                'name' => 'LOGOS SHOP 越谷レイクタウンアウトレット店',
-                'area' => '関東'
-            ],
-            [
-                'id' => 5,
-                'name' => 'LOGOS SHOP 山口店',
-                'area' => '中国',
-            ],
-            [
-                'id' => 6,
-                'name' => 'LOGOS SHOP 静岡清水店',
-                'area' => '東海',
-            ],
-            [
-                'id' => 7,
-                'name' => 'LOGOS SHOP ららぽーと沼津',
-                'area' => '東海',
-            ],
-            [
-                'id' => 8,
-                'name' => 'フォレオ大津一里山店',
-                'area' => '近畿',
-            ],
-            [
-                'id' => 9,
-                'name' => 'LOGOS SHOP ピエリ守山店',
-                'area' => '近畿',
-            ],
-            [
-                'id' => 10,
-                'name' => 'LOGOS SHOP & CAFE ロゴスランド店',
-                'area' => '北関東・甲信',
+                'name' => 'No4 チューブラルグリルの機能',
             ],
         ];
 
-        return $shops;
+        return $articles;
     }
 
     private function getAreaPref()

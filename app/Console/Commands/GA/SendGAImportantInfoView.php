@@ -5,27 +5,27 @@ namespace App\Console\Commands\GA;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 
-class SendGAContentView extends Command
+class SendGAImportantInfoView extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:send-ga-content-view';
+    protected $signature = 'app:send-ga-important-info-view';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'GA4イベントテスト送信用コマンド(製品閲覧)';
+    protected $description = 'GA4イベントテスト送信用コマンド(重要なお知らせ閲覧)';
 
     /**
      * 送信データ
      *
+     * 記事ID
      * 記事名
-     * 記事種別
      * 会員番号
      * 都道府県
      * 年齢
@@ -52,6 +52,7 @@ class SendGAContentView extends Command
                 $app_instance_id = bin2hex(random_bytes(16));
                 $age = rand(18, 65);
                 $continue_use_date = rand(1, 365);
+                $lfMemberId = rand(1, 100000000);
 
                 $randomAreaPref = $areaPref[array_rand($areaPref)];
 
@@ -59,10 +60,11 @@ class SendGAContentView extends Command
                     'app_instance_id' => $app_instance_id,
                     'events' => [
                         [
-                            'name' => 'content_view',
+                            'name' => 'important_info_view',
                             'params' => [
-                                'article_name' => $article['name'],
-                                'article_type' => $article['type'],
+                                'article_id' => $article['id'],
+                                'content_name' => $article['name'],
+                                'lf_member_id' => $lfMemberId,
                                 'lf_member_number' => $lf_member_number,
                                 'area' => $randomAreaPref['area'],
                                 'pref' => $randomAreaPref['pref'],
@@ -108,52 +110,16 @@ class SendGAContentView extends Command
     {
         $articles = [
             [
-                'name' => '横浜簡単中華BBQ!',
-                'type' => '月刊ロゴス',
-            ],
-            [
-                'name' => 'おかっぱとボブPRESENTS 韓国・済州島 食べ歩き旅。',
-                'type' => '月刊ロゴス',
-            ],
-            [
-                'name' => '2025 Regular THE LOGOS SHOW 新入社員が宣伝部長に挑戦！',
-                'type' => '月刊ロゴス',
-            ],
-            [
-                'name' => '#0198 春キャベツのチキンスープ',
-                'type' => 'キャンプ飯',
-            ],
-            [
-                'name' => '#0215 フライドさつまいも',
-                'type' => 'キャンプ飯',
-            ],
-            [
-                'name' => '#0213 味噌おでん',
-                'type' => 'キャンプ飯',
-            ],
-            [
-                'name' => 'No1 道具選びのコツ',
-                'type' => 'まめ知識',
-            ],
-            [
-                'name' => 'No2 キャンプ場に行く前の確認いろいろ',
-                'type' => 'まめ知識',
-            ],
-            [
-                'name' => 'No4 チューブラルグリルの機能',
-                'type' => 'まめ知識',
-            ],
-            [
+                'id' => 1,
                 'name' => '2024年度 一部製品の値上げ・値下げのお知らせ',
-                'type' => '重要なお知らせ',
             ],
             [
+                'id' => 2,
                 'name' => '台風10号の影響による商品の発送・お届け遅延の可能性について',
-                'type' => '重要なお知らせ',
             ],
             [
+                'id' => 3,
                 'name' => '2024年 夏季期間(お盆)の出荷スケジュール',
-                'type' => '重要なお知らせ',
             ]
 
         ];

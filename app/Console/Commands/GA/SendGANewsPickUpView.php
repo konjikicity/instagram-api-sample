@@ -5,31 +5,32 @@ namespace App\Console\Commands\GA;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 
-class SendGAShopFollow extends Command
+class SendGANewsPickUpView extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:send-ga-shop-follow';
+    protected $signature = 'app:send-ga-news-pickup-view';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'GA4イベントテスト送信用コマンド(店舗フォロー)';
+    protected $description = 'GA4イベントテスト送信用コマンド(ニュースピックアップ閲覧)';
 
     /**
-     * データを各店舗10件ずつ送信
+     * 送信データ
      *
-     * フォロー店舗名
-     * エリア
+     * 記事名
+     * 記事種別
      * 会員番号
      * 都道府県
      * 年齢
      * 継続利用日数
+     * 遷移元
      */
     public function handle()
     {
@@ -40,35 +41,35 @@ class SendGAShopFollow extends Command
         $client = new Client();
         $url = "https://www.google-analytics.com/mp/collect?firebase_app_id={$firebase_app_id}&api_secret={$measurement_api_secret}";
 
-        $shops =  $this->getShops();
         $areaPref = $this->getAreaPref();
-        $loopCount = rand(1, 100);
+        $transitionSources = $this->getTransitionSource();
+        $news = $this->getNews();
 
-        foreach ($shops as $shop) {
+        foreach ($news as $item) {
+            $loopCount = rand(1, 100);
             for ($i = 0; $i < $loopCount; $i++) {
                 $lf_member_number = rand(100000, 999999);
                 $app_instance_id = bin2hex(random_bytes(16));
                 $age = rand(18, 65);
                 $continue_use_date = rand(1, 365);
-
-                $lfMemberId = rand(1, 100000000);
                 $randomAreaPref = $areaPref[array_rand($areaPref)];
+                $lfMemberId = rand(1, 100000000);
 
                 $data = [
                     'app_instance_id' => $app_instance_id,
                     'events' => [
                         [
-                            'name' => 'shop_follow',
+                            'name' => 'news_pickup_view',
                             'params' => [
-                                'shop_id' => $shop['id'],
-                                'shop_name' => $shop['name'],
-                                'shop_area' => $shop['area'],
+                                'article_id' => $item['id'],
+                                'content_name' => $item['name'],
                                 'lf_member_id' => $lfMemberId,
                                 'lf_member_number' => $lf_member_number,
                                 'area' => $randomAreaPref['area'],
                                 'pref' => $randomAreaPref['pref'],
                                 'age' => $age,
                                 'continue_use_date' => $continue_use_date,
+                                'transition_source' => $transitionSources[array_rand($transitionSources)],
                                 "session_id" => "123",
                                 "engagement_time_msec" => "100",
                             ]
@@ -83,7 +84,7 @@ class SendGAShopFollow extends Command
 
                     if ($response->getStatusCode() == 204) {
                         $count = $i + 1;
-                        echo "イベントが正常に送信されました: {$shop['name']} ({$count}回目)\n";
+                        echo "イベントが正常に送信されました: {$item['name']} ({$count}回目)\n";
                     } else {
                         echo "エラーが発生しました: " . $response->getBody();
                     }
@@ -94,62 +95,38 @@ class SendGAShopFollow extends Command
         }
     }
 
-    private function getShops(): array
+    private function getNews(): array
     {
-        $shops = [
+        $news = [
             [
                 'id' => 1,
-                'name' => 'LOGOS SHOP 札幌店',
-                'area' => '北海道'
+                'name' => '囲炉裏テーブル＆耐熱テーブル！2つのシーンで活躍する「2WAY囲炉裏タフテーブル」新発売'
             ],
             [
                 'id' => 2,
-                'name' => 'LOGOS SHOP 大阪店',
-                'area' => '近畿'
+                'name' => 'ゆらめく灯りでリラックス気分が味わえる。”ピックアップロゴス”11月号「Bamboo ゆらめき・コテージランタン」公開！'
             ],
             [
                 'id' => 3,
-                'name' => 'LOGOS SHOP 東京店',
-                'area' => '関東'
+                'name' => '雑誌「GetNavi 12月号」にてロゴス製品が紹介されました！',
             ],
             [
                 'id' => 4,
-                'name' => 'LOGOS SHOP 越谷レイクタウンアウトレット店',
-                'area' => '関東'
-            ],
-            [
-                'id' => 5,
-                'name' => 'LOGOS SHOP 山口店',
-                'area' => '中国',
-            ],
-            [
-                'id' => 6,
-                'name' => 'LOGOS SHOP 静岡清水店',
-                'area' => '東海',
-            ],
-            [
-                'id' => 7,
-                'name' => 'LOGOS SHOP ららぽーと沼津',
-                'area' => '東海',
-            ],
-            [
-                'id' => 8,
-                'name' => 'フォレオ大津一里山店',
-                'area' => '近畿',
-            ],
-            [
-                'id' => 9,
-                'name' => 'LOGOS SHOP ピエリ守山店',
-                'area' => '近畿',
-            ],
-            [
-                'id' => 10,
-                'name' => 'LOGOS SHOP & CAFE ロゴスランド店',
-                'area' => '北関東・甲信',
+                'name' => '【ロゴスファミリー】メールマガジン送信元メールアドレスの変更について'
             ],
         ];
 
-        return $shops;
+        return $news;
+    }
+
+    private function getTransitionSource(): array
+    {
+        $transitionSources = [
+            'TOPページ',
+            'Push通知'
+        ];
+
+        return $transitionSources;
     }
 
     private function getAreaPref()

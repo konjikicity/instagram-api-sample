@@ -5,27 +5,27 @@ namespace App\Console\Commands\GA;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 
-class SendGAPickUpView extends Command
+class SendGAMonthlyLogosView extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:send-ga-pickup-view';
+    protected $signature = 'app:send-ga-monthly-logos-view';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'GA4イベントテスト送信用コマンド(ピックアップ閲覧)';
+    protected $description = 'GA4イベントテスト送信用コマンド(月刊ロゴス閲覧)';
 
     /**
      * 送信データ
      *
+     * 記事ID
      * 記事名
-     * 記事種別
      * 会員番号
      * 都道府県
      * 年齢
@@ -43,31 +43,32 @@ class SendGAPickUpView extends Command
 
         $areaPref = $this->getAreaPref();
         $transitionSources = $this->getTransitionSource();
-        $types = $this->getType();
+        $articles = $this->getArticles();
 
-        foreach ($types as $type) {
+        foreach ($articles as $article) {
             $loopCount = rand(1, 100);
             for ($i = 0; $i < $loopCount; $i++) {
                 $lf_member_number = rand(100000, 999999);
                 $app_instance_id = bin2hex(random_bytes(16));
                 $age = rand(18, 65);
                 $continue_use_date = rand(1, 365);
-
+                $lfMemberId = rand(1, 100000000);
                 $randomAreaPref = $areaPref[array_rand($areaPref)];
 
                 $data = [
                     'app_instance_id' => $app_instance_id,
                     'events' => [
                         [
-                            'name' => 'pickup_view',
+                            'name' => 'monthly_logos_view',
                             'params' => [
-                                'article_name' => 'Logos' . $type . 'Vol' . $i,
+                                'article_id' => $article['id'],
+                                'content_name' => $article['name'],
+                                'lf_member_id' => $lfMemberId,
                                 'lf_member_number' => $lf_member_number,
                                 'area' => $randomAreaPref['area'],
                                 'pref' => $randomAreaPref['pref'],
                                 'age' => $age,
                                 'continue_use_date' => $continue_use_date,
-                                'type' => $type,
                                 'transition_source' => $transitionSources[array_rand($transitionSources)],
                                 "session_id" => "123",
                                 "engagement_time_msec" => "100",
@@ -83,7 +84,7 @@ class SendGAPickUpView extends Command
 
                     if ($response->getStatusCode() == 204) {
                         $count = $i + 1;
-                        echo "イベントが正常に送信されました: {$type} ({$count}回目)\n";
+                        echo "イベントが正常に送信されました: {$article['name']} ({$count}回目)\n";
                     } else {
                         echo "エラーが発生しました: " . $response->getBody();
                     }
@@ -94,24 +95,34 @@ class SendGAPickUpView extends Command
         }
     }
 
-    private function getType(): array
-    {
-        $types = [
-            'ニュース',
-            '製品'
-        ];
-
-        return $types;
-    }
-
     private function getTransitionSource(): array
     {
         $transitionSources = [
-            'TOPページ',
+            'ニュースTOP',
             'Push通知'
         ];
 
         return $transitionSources;
+    }
+
+    private function getArticles(): array
+    {
+        $articles = [
+            [
+                'id' => 1,
+                'name' => '横浜簡単中華BBQ!',
+            ],
+            [
+                'id' => 2,
+                'name' => 'おかっぱとボブPRESENTS 韓国・済州島 食べ歩き旅。',
+            ],
+            [
+                'id' => 3,
+                'name' => '2025 Regular THE LOGOS SHOW 新入社員が宣伝部長に挑戦！',
+            ],
+        ];
+
+        return $articles;
     }
 
     private function getAreaPref()

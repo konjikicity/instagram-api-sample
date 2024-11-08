@@ -51,6 +51,8 @@ class SendGAShopCheckIn extends Command
                 $age = rand(18, 65);
                 $continue_use_date = rand(1, 365);
 
+                $lfMemberId = rand(1, 100000000);
+
                 $randomAreaPref = $areaPref[array_rand($areaPref)];
 
                 $data = [
@@ -59,8 +61,10 @@ class SendGAShopCheckIn extends Command
                         [
                             'name' => 'shop_check_in',
                             'params' => [
+                                'shop_id' => $shop['id'],
                                 'shop_name' => $shop['name'],
                                 'shop_area' => $shop['area'],
+                                'lf_member_id' => $lfMemberId,
                                 'lf_member_number' => $lf_member_number,
                                 'area' => $randomAreaPref['area'],
                                 'pref' => $randomAreaPref['pref'],
@@ -95,42 +99,52 @@ class SendGAShopCheckIn extends Command
     {
         $shops = [
             [
+                'id'   => 1,
                 'name' => 'LOGOS SHOP 札幌店',
                 'area' => '北海道'
             ],
             [
+                'id'   => 2,
                 'name' => 'LOGOS SHOP 大阪店',
                 'area' => '近畿'
             ],
             [
+                'id'   => 3,
                 'name' => 'LOGOS SHOP 東京店',
                 'area' => '関東'
             ],
             [
+                'id'   => 4,
                 'name' => 'LOGOS SHOP 越谷レイクタウンアウトレット店',
                 'area' => '関東'
             ],
             [
+                'id'   => 5,
                 'name' => 'LOGOS SHOP 山口店',
                 'area' => '中国',
             ],
             [
+                'id'   => 6,
                 'name' => 'LOGOS SHOP 静岡清水店',
                 'area' => '東海',
             ],
             [
+                'id'   => 7,
                 'name' => 'LOGOS SHOP ららぽーと沼津',
                 'area' => '東海',
             ],
             [
+                'id'   => 8,
                 'name' => 'フォレオ大津一里山店',
                 'area' => '近畿',
             ],
             [
+                'id'   => 9,
                 'name' => 'LOGOS SHOP ピエリ守山店',
                 'area' => '近畿',
             ],
             [
+                'id'   => 10,
                 'name' => 'LOGOS SHOP & CAFE ロゴスランド店',
                 'area' => '北関東・甲信',
             ],

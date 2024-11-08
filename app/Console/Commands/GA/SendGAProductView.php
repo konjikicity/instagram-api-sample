@@ -53,6 +53,7 @@ class SendGAProductView extends Command
                 $app_instance_id = bin2hex(random_bytes(16));
                 $age = rand(18, 65);
                 $continue_use_date = rand(1, 365);
+                $lfMemberId = rand(1, 100000000);
 
                 $randomAreaPref = $areaPref[array_rand($areaPref)];
 
@@ -62,10 +63,12 @@ class SendGAProductView extends Command
                         [
                             'name' => 'product_view',
                             'params' => [
-                                'product_name' => $product['name'],
+                                'product_id' => $product['id'],
+                                'content_name' => $product['name'],
                                 'large_category' => $product['large_category'],
                                 'medium_category' => $product['medium_category'],
                                 'small_category' => $product['small_category'],
+                                'lf_member_id' => $lfMemberId,
                                 'lf_member_number' => $lf_member_number,
                                 'area' => $randomAreaPref['area'],
                                 'pref' => $randomAreaPref['pref'],
@@ -111,72 +114,84 @@ class SendGAProductView extends Command
     {
         $products = [
             [
+                'id' => 1,
                 'name' => 'プレミアム デビルブロックルーム EX-BD（グレートドゥーブルG2・プラス XL-BD用）',
                 'large_category' => 'ギア',
                 'medium_category' => 'テント',
                 'small_category' => '2ルーム'
             ],
             [
+                'id' => 2,
                 'name' => 'プレミアム PANEL グレートドゥーブルG2・プラス XL-BD',
                 'large_category' => 'ギア',
                 'medium_category' => 'テント',
                 'small_category' => '2ルーム'
             ],
             [
+                'id' => 3,
                 'name' => '【秋セット】丸洗いスランバーシュラフ・-2　2個セット',
                 'large_category' => 'ギア',
                 'medium_category' => '寝具',
                 'small_category' => 'シュラフ'
             ],
             [
+                'id' => 4,
                 'name' => '【秋セット】丸洗いやわらか あったかシュラフ・-2　2個セット',
                 'large_category' => 'ギア',
                 'medium_category' => '寝具',
                 'small_category' => 'シュラフ'
             ],
             [
+                'id' => 5,
                 'name' => '氷点下リカバリー・クールボディタオル',
                 'large_category' => 'アパレル',
                 'medium_category' => 'アクセサリー',
                 'small_category' => 'タオル・てぬぐい・バンダナ'
             ],
             [
+                'id' => 6,
                 'name' => 'CAMP LOGOS Leeコラボフリージーパンツ',
                 'large_category' => 'アパレル',
                 'medium_category' => 'ボトムス',
                 'small_category' => 'パンツ'
             ],
             [
+                'id' => 7,
                 'name' => 'アネモスシェル（Family)',
                 'large_category' => 'アパレル',
                 'medium_category' => 'アウター',
                 'small_category' => 'ジャケット'
             ],
             [
+                'id' => 8,
                 'name' => 'ロゴスのえほん 水くん',
                 'large_category' => 'コレクション',
                 'medium_category' => 'カタログ',
                 'small_category' => 'その他'
             ],
             [
+                'id' => 9,
                 'name' => 'ロゴスのえほん 火くん',
                 'large_category' => 'コレクション',
                 'medium_category' => 'カタログ',
                 'small_category' => 'その他'
             ],
             [
+                'id' => 10,
                 'name' => 'ロゴスのえほん 木くん',
                 'large_category' => 'コレクション',
                 'medium_category' => 'カタログ',
                 'small_category' => 'その他'
             ],
             [
+                'id' => 11,
                 'name' => 'Loopadd どこでもホルダー',
                 'large_category' => 'ギア',
                 'medium_category' => '寝具',
                 'small_category' => 'チェアカバー',
             ],
             [
+                'id' => 12,
                 'name' => '【秋セット】7075キュービックチェア（レッド）　2個セット',
                 'large_category' => 'ギア',
                 'medium_category' => '寝具',
